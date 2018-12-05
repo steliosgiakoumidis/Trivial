@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Trivial.DatabaseAccessLayer;
@@ -52,6 +53,7 @@ namespace Trivial.Handlers
             var url = $"https://opentdb.com/api.php?{amount}{type}{difficulty}{category}";
             var res = await client.GetAsync(url);
             var body = await res.Content.ReadAsStringAsync();
+
             var processedResponse = ProcessResponse(body);
             databasesAccess.Persist(processedResponse);
             return processedResponse;
@@ -60,6 +62,10 @@ namespace Trivial.Handlers
         private List<Question> ProcessResponse(string body)
         {
             var extractedResponse = JsonConvert.DeserializeObject<RawModel>(body);
+            foreach (var question in extractedResponse.results)
+            {
+                question.question = HttpUtility.HtmlDecode(question.question);
+            }
             return extractedResponse.results;
         }
     }

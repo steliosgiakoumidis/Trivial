@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Options;
 using Trivial.Controllers;
 using Trivial.DatabaseAccessLayer;
 using Trivial.Handlers;
+using Trivial.Models;
 
 namespace Trivial
 {
@@ -32,6 +34,8 @@ namespace Trivial
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<TrivialContext>(options => options.UseSqlServer("Server=192.168.0.29,1433;Database=Trivial;User Id=SA;Password=Oresti18;"));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.Configure<Config>(opt => Configuration.GetSection("Config").Bind(opt));
             services.AddScoped<IHandleTrivialRequest, HandleTrivialRequest>();

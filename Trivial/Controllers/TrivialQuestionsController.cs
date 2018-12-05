@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Trivial.DatabaseAccessLayer;
 using Trivial.DataModels;
 using Trivial.Handlers;
+using Trivial.Models;
 
 namespace Trivial.Controllers
 {
@@ -20,6 +21,7 @@ namespace Trivial.Controllers
         private readonly IHandleTrivialRequest _handleTrivialRequest;
         private readonly HttpClient _httpClient;
         private readonly IDatabaseAccess _databaseAccess;
+        private readonly TrivialContext _context;
 
         public TrivialQuestionsController(IOptions<Config> conf,
             IHandleTrivialRequest handleTrivialRequest,
