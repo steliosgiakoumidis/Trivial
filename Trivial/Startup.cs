@@ -10,14 +10,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Trivial.Controllers;
+using Trivial.DatabaseAccessLayer;
+using Trivial.Handlers;
 
 namespace Trivial
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var confBuilder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables();
+            
+            Configuration = confBuilder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -26,6 +33,9 @@ namespace Trivial
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.Configure<Config>(opt => Configuration.GetSection("Config").Bind(opt));
+            services.AddScoped<IHandleTrivialRequest, HandleTrivialRequest>();
+            services.AddScoped<IDatabaseAccess, DatabaseAccess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

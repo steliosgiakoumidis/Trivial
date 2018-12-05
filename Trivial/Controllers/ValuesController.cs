@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Trivial.Controllers
 {
@@ -10,6 +11,12 @@ namespace Trivial.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private Config _config;
+
+        public ValuesController(IOptions<Config> conf)
+        {
+            _config = conf.Value;
+        }
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
