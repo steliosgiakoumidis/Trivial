@@ -28,6 +28,7 @@ namespace Trivial.DatabaseAccessLayer
             Dictionary<int, Question> listOfQuestions = new Dictionary<int, Question>();
             using (var conn = new SqlConnection(_connectionString))
             {
+                conn.Open();
                 var cmdText = "SELECT id, category, type, difficulty, " +
                               "question, correct_answer, " +
                               "incorrect_answers FROM Trivial ";
@@ -37,15 +38,12 @@ namespace Trivial.DatabaseAccessLayer
                     {
                         while (reader.Read())
                         {
-                            var qstn = new Question()
-                            {
-                                category = reader["category"].ToString(),
-                                correct_answer = reader["correct_answer"].ToString(),
-                                difficulty = reader["difficulty"].ToString(),
-                                incorrect_answers = reader["incorrect_answers"].ToString().Split(','),
-                                question = reader["question"].ToString(),
-                                type = reader["type"].ToString()
-                            };
+                            var qstn = new Question(reader["category"].ToString(),
+                                reader["type"].ToString(),
+                                reader["difficulty"].ToString(),
+                                reader["question"].ToString(), 
+                                reader["correct_answer"].ToString(),
+                                reader["incorrect_answers"].ToString().Split(','));
                             var id = Convert.ToInt32(reader["id"]);
                             listOfQuestions.Add(id, qstn);
                         }
@@ -55,13 +53,13 @@ namespace Trivial.DatabaseAccessLayer
             return listOfQuestions;
         }
 
-        public void Persist(ResponseModel questions)
+        public void Persist(IEnumerable<Question> questions)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
                 List<int> listOfIds = GetHashId(conn);               
-                foreach (var question in questions.results)
+                foreach (var question in questions)
                 {
                     var id = question.question.GetHashCode();
                     if (!listOfIds.Contains(id))
@@ -95,18 +93,18 @@ namespace Trivial.DatabaseAccessLayer
             }
         }
 
-        public ResponseModel ReadFromMemory(RequestModel request)
+        public IEnumerable<Question> ReadFromMemory(RequestModel request)
         {
             var ravd = new Random();
-            var reponseModel = new ResponseModel();
-            reponseModel.results = _listOfQuestions.Values
+            var reponse = new List<Question>();
+            reponse = _listOfQuestions.Values
                 .Where(q => q.category == request.Category)
                 .Where(q => q.difficulty == request.Difficulty)
                 .Where(q => q.type == request.Type)
                 .OrderBy(r => ravd.Next()).Take(Convert.ToInt32(request.Amount)).ToList();
-            if (reponseModel.results.Count() < Convert.ToInt32(request.Amount)) return null;
+            if (reponse.Count() < Convert.ToInt32(request.Amount)) return null;
             //Random selection out of the list
-            return reponseModel;
+            return reponse;
         }
 
         public List<int> GetHashId(SqlConnection conn)
@@ -117,7 +115,7 @@ namespace Trivial.DatabaseAccessLayer
             {
                 using (var dataReader = readIdcmd.ExecuteReader())
                 {
-                    listOfIds.Add(Convert.ToInt32(dataReader.GetString(0)));
+                    listOfIds.Add(Convert.ToInt32(dataReader["id"].ToString()));
                 }
             }
             return listOfIds;
@@ -127,7 +125,7 @@ namespace Trivial.DatabaseAccessLayer
     public interface IDatabaseAccess
     {
         Dictionary<int, Question> GetAllQuestions();
-        void Persist(ResponseModel questions);
-        ResponseModel ReadFromMemory(RequestModel request);
+        void Persist(IEnumerable<Question> questions);
+        IEnumerable<Question> ReadFromMemory(RequestModel request);
     }
 }

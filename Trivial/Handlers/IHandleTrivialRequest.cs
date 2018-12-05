@@ -10,7 +10,7 @@ namespace Trivial.Handlers
 {
     public interface IHandleTrivialRequest
     {
-        Task<ResponseModel> Handle(RequestModel model, HttpClient client,
+        Task<IEnumerable<Question>> Handle(RequestModel model, HttpClient client,
             IDatabaseAccess databaseAccess);
     }
 }

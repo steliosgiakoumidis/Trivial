@@ -13,7 +13,7 @@ namespace Trivial.Handlers
 {
     public class HandleTrivialRequest:IHandleTrivialRequest
     {
-        public async Task<ResponseModel> Handle(RequestModel model,HttpClient client,
+        public async Task<IEnumerable<Question>> Handle(RequestModel model,HttpClient client,
             IDatabaseAccess databaseAccess)
         {
             var result = await GetQuestions(client, databaseAccess, model);
@@ -21,7 +21,7 @@ namespace Trivial.Handlers
             return result;
         }
 
-        private async Task<ResponseModel> GetQuestions(HttpClient client,
+        private async Task<IEnumerable<Question>> GetQuestions(HttpClient client,
             IDatabaseAccess databaseAccess, RequestModel model)
         {
             try
@@ -37,12 +37,12 @@ namespace Trivial.Handlers
                 catch (Exception e)
                 {
                     //log exception 
-                    return new ResponseModel();
+                    return new List<Question>();
                 }
             }
         }
 
-        private async Task<ResponseModel> GetQuestionsOnline(HttpClient client, IDatabaseAccess databasesAccess, RequestModel model)
+        private async Task<List<Question>> GetQuestionsOnline(HttpClient client, IDatabaseAccess databasesAccess, RequestModel model)
         {
             var amount = String.IsNullOrWhiteSpace(model.Amount) ? "amount=10" : $"amount={model.Amount}";
             var type = String.IsNullOrWhiteSpace(model.Type) ? "" : $"&type={model.Type}";
@@ -57,11 +57,10 @@ namespace Trivial.Handlers
             return processedResponse;
         }
 
-        private ResponseModel ProcessResponse(string body)
+        private List<Question> ProcessResponse(string body)
         {
             var extractedResponse = JsonConvert.DeserializeObject<RawModel>(body);
-            var refined = new ResponseModel(){results = extractedResponse.results};
-            return refined;
+            return extractedResponse.results;
         }
     }
 }

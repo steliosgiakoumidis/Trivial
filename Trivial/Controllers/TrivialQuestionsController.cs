@@ -31,12 +31,18 @@ namespace Trivial.Controllers
             _databaseAccess = databaseAccess;
         }
 
-        [HttpGet("que")]
-        public async Task<ActionResult<List<Question>>> GetQuestions()
+        [HttpGet("{amount}/{category}/{difficulty}/{type}")]
+        public async Task<ActionResult<IEnumerable<Question>>> GetQuestions(string amount,
+            string category, string difficulty, string type)
         {
-            var a = new RequestModel() {Amount = "10", Category = "10", Difficulty = "10", Type = "10"};
+            if (amount == "0") amount = "";
+            if (category == "0") category = "";
+            if (difficulty == "0") difficulty = "";
+            if (type == "0") type = "";
+
+            var a = new RequestModel(amount, category, difficulty, type);
             var b = await _handleTrivialRequest.Handle(a, _httpClient, _databaseAccess);
-            return b.results;
+            return Ok(b);
         }
     }
 }
