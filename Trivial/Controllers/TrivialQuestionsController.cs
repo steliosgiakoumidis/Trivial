@@ -41,7 +41,6 @@ namespace Trivial.Controllers
             if (category == "0") category = "";
             if (difficulty == "0") difficulty = "";
             if (type == "0") type = "";
-
             var a = new RequestModel(amount, category, difficulty, type);
             var b = await _handleTrivialRequest.Handle(a, _httpClient, _databaseAccess);
             return Ok(b);
