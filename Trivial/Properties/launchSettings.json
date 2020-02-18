@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/trivialquestions/10/0/0/0",
+      "launchUrl": "api/trivialquestions/amount/10/category/0/difficulty/hard",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

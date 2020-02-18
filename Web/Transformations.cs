@@ -14,12 +14,12 @@ namespace Web
             foreach (var questionSet in questionSets)
             {
                 var viewModel = new ViewModel();
-                viewModel.Question = questionSet.Question;
-                viewModel.Answers = new List<string>() { questionSet.Correct_answer };
-                viewModel.Answers.AddRange(questionSet.Incorrect_answers);
+                viewModel.Question = questionSet.question;
+                viewModel.Answers = new List<string>() { questionSet.correct_answer };
+                viewModel.Answers.AddRange(questionSet.incorrect_answers);
                 viewModel.Answers = viewModel.Answers.OrderBy(x => random.Next()).ToList();
-                viewModel.CorrectAnswer = viewModel.Answers.FindIndex(x => x == questionSet.Correct_answer);
-                viewModel.QuestionType = questionSet.Type;
+                viewModel.CorrectAnswer = viewModel.Answers.FindIndex(x => x == questionSet.correct_answer);
+                viewModel.QuestionType = questionSet.type;
                 result.Add(viewModel);
             }
 

@@ -25,9 +25,9 @@ namespace Trivial.Controllers
             _handleTrivialRequest = handleTrivialRequest;
         }
 
-        [HttpGet("{amount}/{category}/{difficulty}/{type}")]
+        [HttpGet("amount/{amount}/category/{category}/difficulty/{difficulty}")]
         public async Task<ActionResult<IEnumerable<ResponseModel>>> GetQuestions(string amount,
-            string category, string difficulty, string type)
+            string category, string difficulty)
         {
             if (amount == "0" || String.IsNullOrEmpty(amount))
                 amount = "";
@@ -35,9 +35,7 @@ namespace Trivial.Controllers
                 category = "";
             if (difficulty == "0" || String.IsNullOrEmpty(difficulty))
                 difficulty = "";
-            if (type == "0" || String.IsNullOrEmpty(type))
-                type = "";
-            var requetsModel = new RequestModel(amount, category, difficulty, type);
+            var requetsModel = new RequestModel(amount, category, difficulty);
 
             var questionsResponse = await _handleTrivialRequest.Handle(requetsModel);
             if (!questionsResponse.Any())

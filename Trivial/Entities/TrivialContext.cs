@@ -52,10 +52,6 @@ namespace Trivial.Entities
                 entity.Property(e => e.Question)
                     .IsRequired()
                     .HasColumnName("question");
-
-                entity.Property(e => e.Type)
-                    .IsRequired()
-                    .HasColumnName("type");
             });
         }
     }

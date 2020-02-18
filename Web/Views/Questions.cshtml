@@ -58,7 +58,6 @@
         answers.push(id);
         ++offset;
         if (offset < length) {
-
             next();
         } else {
             ShowResult();
@@ -91,15 +90,3 @@
 
 <div id="oi"></div>
 
-
-@*@foreach (var item in Model)
-    {
-        <div>
-            @item.question
-        </div>
-        @foreach (var que in item.incorrect_answers)
-        {
-            <button>@que</button>
-        }
-        <div></div>
-    }*@

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+
 namespace Trivial.DataModels
 {
     public class RawModel
     {
-        public int response_code { get; set; }
+        public int Response_code { get; set; }
         public List<ResponseModel> Results { get; set; }
 
     }
@@ -14,21 +16,21 @@ namespace Trivial.DataModels
         {
         }
 
-        public ResponseModel(string category, string type, string difficulty,
-            string question, string correctAnswer, string[] incorrectAnswer)
+        public ResponseModel(string category, string difficulty,
+            string question, string correctAnswer, string[] incorrectAnswer, string type)
         {
-            Category = category;
-            Type = type;
-            Difficulty = difficulty;
-            Question = question;
-            Correct_answer = correctAnswer;
-            Incorrect_answers = incorrectAnswer;
+            this.category = category;
+            this.difficulty = difficulty;
+            this.question = question;
+            correct_answer = correctAnswer;
+            incorrect_answers = incorrectAnswer;
+            this.type = type;
         }
-        public string Category { get; set; }
-        public string Type { get; set; }
-        public string Difficulty { get; set; }
-        public string Question { get; set; }
-        public string Correct_answer { get; set; }
-        public string[] Incorrect_answers { get; set; }
+        public string category { get; set; }
+        public string difficulty { get; set; }
+        public string question { get; set; }
+        public string correct_answer { get; set; }
+        public string type { get; set; }
+        public string[] incorrect_answers { get; set; }
     }
 }

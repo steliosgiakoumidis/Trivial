@@ -49,7 +49,7 @@ namespace Trivial.Handlers
         {
             var client = _clientFactory.CreateClient();
             var amount = String.IsNullOrWhiteSpace(model.Amount) ? "amount=10" : $"amount={model.Amount}";
-            var type = String.IsNullOrWhiteSpace(model.Type) ? "" : $"&type={model.Type}";
+            var type = "" ;
             var difficulty = String.IsNullOrWhiteSpace(model.Difficulty) ? "" : $"&difficulty={model.Difficulty}";
             var category = String.IsNullOrWhiteSpace(model.Category) ? "" : $"&category={model.Category}";
 
@@ -69,7 +69,7 @@ namespace Trivial.Handlers
             var extractedResponse = JsonConvert.DeserializeObject<RawModel>(body);
             foreach (var question in extractedResponse.Results)
             {
-                question.Question = HttpUtility.HtmlDecode(question.Question).Replace(@"\", "");
+                question.question = HttpUtility.HtmlDecode(question.question).Replace(@"\", "");
 
             }
             return extractedResponse.Results;

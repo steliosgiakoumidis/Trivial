@@ -28,7 +28,7 @@ namespace Trivial.DatabaseAccessLayer
             List<int> listOfIds = GetHashIds();
             foreach (var question in questions)
             {
-                var id = question.Question.GetHashCode();
+                var id = question.question.GetHashCode();
                 if (!listOfIds.Contains(id))
                 {
                     PersistQuestion(question, id);
@@ -42,12 +42,12 @@ namespace Trivial.DatabaseAccessLayer
             _context.Trivial.Add(new Entities.Trivial()
             {
                 Id = id,
-                Category = question.Category,
-                CorrectAnswer = question.Correct_answer,
-                Difficulty = question.Difficulty,
-                IncorrectAnswers = String.Join(".!.", question.Incorrect_answers),
-                Question = question.Question,
-                Type = question.Type
+                Category = question.category,
+                CorrectAnswer = question.correct_answer,
+                Difficulty = question.difficulty,
+                IncorrectAnswers = String.Join(".!.", question.incorrect_answers),
+                Question = question.question,
+                Type = question.type
             });
             _context.SaveChanges();
         }
@@ -58,7 +58,6 @@ namespace Trivial.DatabaseAccessLayer
             var response = _context.Trivial
                 .Where(q => q.Category == request.Category)
                 .Where(q => q.Difficulty == request.Difficulty)
-                .Where(q => q.Type == request.Type)
                 .OrderBy(r => rand.Next()).Take(Convert.ToInt32(request.Amount)).ToList();
             if (response.Count() < Convert.ToInt32(request.Amount)) 
                 return null;         
@@ -68,9 +67,9 @@ namespace Trivial.DatabaseAccessLayer
 
         private IEnumerable<ResponseModel> EntityToResponseModel(List<Entities.Trivial> response)
         {
-            return response.Select(trivial => new ResponseModel(trivial.Category, trivial.Type,
+            return response.Select(trivial => new ResponseModel(trivial.Category,
                 trivial.Difficulty, trivial.Question, trivial.CorrectAnswer,
-                trivial.IncorrectAnswers.Split(".!.")));
+                trivial.IncorrectAnswers.Split(".!."), trivial.Type));
         }
 
         public List<int> GetHashIds()
