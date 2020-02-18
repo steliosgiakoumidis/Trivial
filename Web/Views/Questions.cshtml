@@ -1,0 +1,105 @@
+﻿@model List<Web.ViewModel>
+
+<h1>Questions</h1>
+<div id="main2">
+    <div id="main">
+    </div>
+    <div></br></div>
+    <a class="block" asp-action="GetQuestions" asp-controller="Home">Re-Start Questions</a>
+
+
+
+</div>
+
+<style>
+    .block {
+
+        width: 100%;
+        border: none;
+        background-color: orange;
+        color: white;
+        padding: 14px 28px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        margin-bottom: 5px;
+        margin-top: 50px;
+    }
+
+        .block:hover {
+            background-color: #ddd;
+            color: black;
+        }
+</style>
+
+<script>
+    window.onload = next;
+    var offset = 0;
+    var i = 0;
+    var model = @Html.Raw(Json.Serialize(Model));
+    var length = model.length;
+    var answers = [];
+    function next() {
+        var questionSet = model[offset];
+        $('#main').empty();
+        $('#main').append(`<div style="border: 3px solid black; padding: 5px;">${questionSet.question}</div>`);
+        if (questionSet.questionType === "boolean") {
+            $('#main').append(`<button style="display: block;width: 100%;border: none;background-color: gray;color: white;padding: 14px 28px;font-size: 16px;cursor: pointer;text-align: center;margin-bottom: 5px;margin-top: 5px;" id="0" onclick="registerAndMove(this.id);">${questionSet.answers[0]}</button>`)
+            $('#main').append(`<button style="display: block;width: 100%;border: none;background-color: gray;color: white;padding: 14px 28px;font-size: 16px;cursor: pointer;text-align: center;margin-bottom: 5px;margin-top: 5px;" id="1" onclick="registerAndMove(this.id);">${questionSet.answers[1]}</button>`)
+        } else {
+            $('#main').append(`<button style="display: block;width: 100%;border: none;background-color: gray;color: white;padding: 14px 28px;font-size: 16px;cursor: pointer;text-align: center;margin-bottom: 5px;margin-top: 5px;"  id="0" onclick="registerAndMove(this.id);">${questionSet.answers[0]}</button>`)
+            $('#main').append(`<button style="display: block;width: 100%;border: none;background-color: gray;color: white;padding: 14px 28px;font-size: 16px;cursor: pointer;text-align: center;margin-bottom: 5px;margin-top: 5px;"  id="1" onclick="registerAndMove(this.id);">${questionSet.answers[1]}</button>`)
+            $('#main').append(`<button style="display: block;width: 100%;border: none;background-color: gray;color: white;padding: 14px 28px;font-size: 16px;cursor: pointer;text-align: center;margin-bottom: 5px;margin-top: 5px;"  id="2" onclick="registerAndMove(this.id);">${questionSet.answers[2]}</button>`)
+            $('#main').append(`<button style="display: block;width: 100%;border: none;background-color: gray;color: white;padding: 14px 28px;font-size: 16px;cursor: pointer;text-align: center;margin-bottom: 5px;margin-top: 5px;"  id="3" onclick="registerAndMove(this.id);">${questionSet.answers[3]}</button>`)
+        }
+    }
+
+    function registerAndMove(id) {
+        answers.push(id);
+        ++offset;
+        if (offset < length) {
+
+            next();
+        } else {
+            ShowResult();
+        }
+    }
+
+    function ShowResult() {
+        var correctAnswers = 0;
+        var totalAnswers = length;
+
+        for (var i = 0; i < totalAnswers; i++) {
+            var a = model[i].correctAnswer;
+            if (model[i].correctAnswer === parseInt(answers[i])) {
+                ++correctAnswers;
+            }
+        }
+        $('#main').empty();
+        $('#main').append('<h1 style="margin: auto; width: 50%">Congratulations!!!</h1>');
+        $('#main').append('<h5 style="margin: auto; width: 50%">This game is finished</h5>');
+        $('#main').append(`<div style="margin: auto; width: 50%; font-size: 30px; border: 3px solid purple;">Your score for this game was <br /> ${correctAnswers}/${totalAnswers}</div>`);
+    }
+
+    function cl() {
+        $("#oi").html("HI")
+    }
+    function buttonClick() {
+        document.getElementById('inc').value = ++i;
+    }
+</script>
+
+<div id="oi"></div>
+
+
+@*@foreach (var item in Model)
+    {
+        <div>
+            @item.question
+        </div>
+        @foreach (var que in item.incorrect_answers)
+        {
+            <button>@que</button>
+        }
+        <div></div>
+    }*@

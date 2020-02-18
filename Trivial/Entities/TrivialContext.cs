@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace Trivial.Models
+namespace Trivial.Entities
 {
     public partial class TrivialContext : DbContext
     {
@@ -22,7 +20,8 @@ namespace Trivial.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=192.168.0.29,1433;Database=Trivial;User Id=SA;Password=Oresti18;");
+                //optionsBuilder.UseSqlServer("Server=192.168.0.29,1433;Database=Trivial;User Id=SA;Password=Oresti18;");
+                optionsBuilder.UseSqlServer("Server=stelios\\sqlexpress;Database=Trivial;Integrated Security=true;");
             }
         }
 

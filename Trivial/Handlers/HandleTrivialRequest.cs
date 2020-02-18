@@ -1,49 +1,42 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Trivial.DatabaseAccessLayer;
 using Trivial.DataModels;
 
 namespace Trivial.Handlers
 {
-    public class HandleTrivialRequest:IHandleTrivialRequest
+    public class HandleTrivialRequest : IHandleTrivialRequest
     {
-        public async Task<IEnumerable<Question>> Handle(RequestModel model,HttpClient client,
+        public async Task<IEnumerable<ResponseModel>> Handle(RequestModel model, HttpClient client,
             IDatabaseAccess databaseAccess)
         {
             var result = await GetQuestions(client, databaseAccess, model);
-        
+
             return result;
         }
 
-        private async Task<IEnumerable<Question>> GetQuestions(HttpClient client,
+        private async Task<IEnumerable<ResponseModel>> GetQuestions(HttpClient client,
             IDatabaseAccess databaseAccess, RequestModel model)
         {
             try
             {
-                return await GetQuestionsOnline(client, databaseAccess, model);
+                var questions = await GetQuestionsOnline(client, databaseAccess, model);
+                if (questions == null)
+                    return databaseAccess.ReadQuestionsFromDatabase(model);
+
+                return questions;
             }
-            catch
+            catch(Exception ex)
             {
-                try
-                {                
-                    return databaseAccess.ReadFromMemory(model);
-                }
-                catch (Exception e)
-                {
-                    //log exception 
-                    return new List<Question>();
-                }
+                //Log the exception
+                return new List<ResponseModel>();
             }
         }
 
-        private async Task<List<Question>> GetQuestionsOnline(HttpClient client, IDatabaseAccess databasesAccess, RequestModel model)
+        private async Task<List<ResponseModel>> GetQuestionsOnline(HttpClient client, IDatabaseAccess databasesAccess, RequestModel model)
         {
             var amount = String.IsNullOrWhiteSpace(model.Amount) ? "amount=10" : $"amount={model.Amount}";
             var type = String.IsNullOrWhiteSpace(model.Type) ? "" : $"&type={model.Type}";
@@ -52,21 +45,24 @@ namespace Trivial.Handlers
 
             var url = $"https://opentdb.com/api.php?{amount}{type}{difficulty}{category}";
             var res = await client.GetAsync(url);
-            var body = await res.Content.ReadAsStringAsync();
+            if (!res.IsSuccessStatusCode)
+                return null;
 
+            var body = await res.Content.ReadAsStringAsync();
             var processedResponse = ProcessResponse(body);
             databasesAccess.Persist(processedResponse);
             return processedResponse;
         }
 
-        private List<Question> ProcessResponse(string body)
+        private List<ResponseModel> ProcessResponse(string body)
         {
             var extractedResponse = JsonConvert.DeserializeObject<RawModel>(body);
-            foreach (var question in extractedResponse.results)
+            foreach (var question in extractedResponse.Results)
             {
-                question.question = HttpUtility.HtmlDecode(question.question);
+                question.Question = HttpUtility.HtmlDecode(question.Question).Replace(@"\", "");
+
             }
-            return extractedResponse.results;
+            return extractedResponse.Results;
         }
     }
 }

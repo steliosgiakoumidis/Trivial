@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Trivial.DatabaseAccessLayer;
 using Trivial.DataModels;
 using Trivial.Handlers;
-using Trivial.Models;
+using Trivial.Entities;
+using System.Linq;
 
 namespace Trivial.Controllers
 {
@@ -21,7 +19,7 @@ namespace Trivial.Controllers
         private readonly IHandleTrivialRequest _handleTrivialRequest;
         private readonly HttpClient _httpClient;
         private readonly IDatabaseAccess _databaseAccess;
-        private readonly TrivialContext _context;
+
 
         public TrivialQuestionsController(IOptions<Config> conf,
             IHandleTrivialRequest handleTrivialRequest,
@@ -34,16 +32,23 @@ namespace Trivial.Controllers
         }
 
         [HttpGet("{amount}/{category}/{difficulty}/{type}")]
-        public async Task<ActionResult<IEnumerable<Question>>> GetQuestions(string amount,
+        public async Task<ActionResult<IEnumerable<ResponseModel>>> GetQuestions(string amount,
             string category, string difficulty, string type)
         {
-            if (amount == "0") amount = "";
-            if (category == "0") category = "";
-            if (difficulty == "0") difficulty = "";
-            if (type == "0") type = "";
-            var a = new RequestModel(amount, category, difficulty, type);
-            var b = await _handleTrivialRequest.Handle(a, _httpClient, _databaseAccess);
-            return Ok(b);
+            if (amount == "0" || String.IsNullOrEmpty(amount))
+                amount = "";
+            if (category == "0" || String.IsNullOrEmpty(category))
+                category = "";
+            if (difficulty == "0" || String.IsNullOrEmpty(difficulty))
+                difficulty = "";
+            if (type == "0" || String.IsNullOrEmpty(type))
+                type = "";
+            var requetsModel = new RequestModel(amount, category, difficulty, type);
+
+            var questionsResponse = await _handleTrivialRequest.Handle(requetsModel, _httpClient, _databaseAccess);
+            if (!questionsResponse.Any())
+                return BadRequest();
+            return Ok(questionsResponse);
         }
     }
 }

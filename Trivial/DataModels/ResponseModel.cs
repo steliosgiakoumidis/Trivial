@@ -4,26 +4,31 @@ namespace Trivial.DataModels
     public class RawModel
     {
         public int response_code { get; set; }
-        public List<Question> results { get; set; }
+        public List<ResponseModel> Results { get; set; }
 
     }
 
-    public class Question
+    public class ResponseModel
     {
-        public Question(string ctg, string tp, string diff, string qstn, string ca, string[] ia)
+        public ResponseModel()
         {
-            category = ctg;
-            type = tp;
-            difficulty = diff;
-            question = qstn;
-            correct_answer = ca;
-            incorrect_answers = ia;
         }
-        public string category { get; set; }
-        public string type { get; set; }
-        public string difficulty { get; set; }
-        public string question { get; set; }
-        public string correct_answer { get; set; }
-        public string[] incorrect_answers { get; set; }
+
+        public ResponseModel(string category, string type, string difficulty,
+            string question, string correctAnswer, string[] incorrectAnswer)
+        {
+            Category = category;
+            Type = type;
+            Difficulty = difficulty;
+            Question = question;
+            Correct_answer = correctAnswer;
+            Incorrect_answers = incorrectAnswer;
+        }
+        public string Category { get; set; }
+        public string Type { get; set; }
+        public string Difficulty { get; set; }
+        public string Question { get; set; }
+        public string Correct_answer { get; set; }
+        public string[] Incorrect_answers { get; set; }
     }
 }
