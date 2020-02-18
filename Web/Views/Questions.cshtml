@@ -5,7 +5,7 @@
     <div id="main">
     </div>
     <div></br></div>
-    <a class="block" asp-action="GetQuestions" asp-controller="Home">Re-Start Questions</a>
+    <a class="block" asp-action="QuestionsParameters" asp-controller="Home">Re-Start Questions</a>
 
 
 
@@ -78,13 +78,6 @@
         $('#main').append('<h1 style="margin: auto; width: 50%">Congratulations!!!</h1>');
         $('#main').append('<h5 style="margin: auto; width: 50%">This game is finished</h5>');
         $('#main').append(`<div style="margin: auto; width: 50%; font-size: 30px; border: 3px solid purple;">Your score for this game was <br /> ${correctAnswers}/${totalAnswers}</div>`);
-    }
-
-    function cl() {
-        $("#oi").html("HI")
-    }
-    function buttonClick() {
-        document.getElementById('inc').value = ++i;
     }
 </script>
 
