@@ -47,7 +47,7 @@ namespace Web.Controllers
                 return BadRequest();
 
             var responseAsAsString = await request.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<List<ResponseModel>>(responseAsAsString);
+            var responseObject = JsonSerializer.Deserialize<List<ResponseModel>>(responseAsAsString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
             var viewModel = new Transformations().ToViewModel(responseObject.ToList());
             return View("~/Views/Questions.cshtml", viewModel);
         }

@@ -28,7 +28,7 @@ namespace Trivial.DatabaseAccessLayer
             List<int> listOfIds = GetHashIds();
             foreach (var question in questions)
             {
-                var id = question.question.GetHashCode();
+                var id = question.Question.GetHashCode();
                 if (!listOfIds.Contains(id))
                 {
                     PersistQuestion(question, id);
@@ -42,12 +42,12 @@ namespace Trivial.DatabaseAccessLayer
             _context.Trivial.Add(new Entities.Trivial()
             {
                 Id = id,
-                Category = question.category,
-                CorrectAnswer = question.correct_answer,
-                Difficulty = question.difficulty,
-                IncorrectAnswers = String.Join(".!.", question.incorrect_answers),
-                Question = question.question,
-                Type = question.type
+                Category = question.Category,
+                CorrectAnswer = question.Correct_Answer,
+                Difficulty = question.Difficulty,
+                IncorrectAnswers = String.Join(".!.", question.Incorrect_Answers),
+                Question = question.Question,
+                Type = question.Type
             });
             _context.SaveChanges();
         }

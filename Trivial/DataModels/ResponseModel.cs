@@ -19,18 +19,18 @@ namespace Trivial.DataModels
         public ResponseModel(string category, string difficulty,
             string question, string correctAnswer, string[] incorrectAnswer, string type)
         {
-            this.category = category;
-            this.difficulty = difficulty;
-            this.question = question;
-            correct_answer = correctAnswer;
-            incorrect_answers = incorrectAnswer;
-            this.type = type;
+            Category = category;
+            Difficulty = difficulty;
+            Question = question;
+            Correct_Answer = correctAnswer;
+            Incorrect_Answers = incorrectAnswer;
+            Type = type;
         }
-        public string category { get; set; }
-        public string difficulty { get; set; }
-        public string question { get; set; }
-        public string correct_answer { get; set; }
-        public string type { get; set; }
-        public string[] incorrect_answers { get; set; }
+        public string Category { get; set; }
+        public string Difficulty { get; set; }
+        public string Question { get; set; }
+        public string Correct_Answer { get; set; }
+        public string Type { get; set; }
+        public string[] Incorrect_Answers { get; set; }
     }
 }

@@ -69,7 +69,7 @@ namespace Trivial.Handlers
             var extractedResponse = JsonConvert.DeserializeObject<RawModel>(body);
             foreach (var question in extractedResponse.Results)
             {
-                question.question = HttpUtility.HtmlDecode(question.question).Replace(@"\", "");
+                question.Question = HttpUtility.HtmlDecode(question.Question).Replace(@"\", "");
 
             }
             return extractedResponse.Results;
