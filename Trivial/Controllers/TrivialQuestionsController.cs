@@ -15,10 +15,7 @@ namespace Trivial.Controllers
     [ApiController]
     public class TrivialQuestionsController : ControllerBase
     {
-        private Config _conf;
         private readonly IHandleTrivialRequest _handleTrivialRequest;
-        private readonly HttpClient _httpClient;
-        private readonly IDatabaseAccess _databaseAccess;
 
 
         public TrivialQuestionsController(IOptions<Config> conf,
@@ -26,9 +23,6 @@ namespace Trivial.Controllers
             IDatabaseAccess databaseAccess)
         {
             _handleTrivialRequest = handleTrivialRequest;
-            _conf = conf.Value;
-            _httpClient = new HttpClient();
-            _databaseAccess = databaseAccess;
         }
 
         [HttpGet("{amount}/{category}/{difficulty}/{type}")]
@@ -45,7 +39,7 @@ namespace Trivial.Controllers
                 type = "";
             var requetsModel = new RequestModel(amount, category, difficulty, type);
 
-            var questionsResponse = await _handleTrivialRequest.Handle(requetsModel, _httpClient, _databaseAccess);
+            var questionsResponse = await _handleTrivialRequest.Handle(requetsModel);
             if (!questionsResponse.Any())
                 return BadRequest();
             return Ok(questionsResponse);

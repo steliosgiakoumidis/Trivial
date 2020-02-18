@@ -8,24 +8,33 @@ using Trivial.DataModels;
 
 namespace Trivial.Handlers
 {
+
     public class HandleTrivialRequest : IHandleTrivialRequest
     {
-        public async Task<IEnumerable<ResponseModel>> Handle(RequestModel model, HttpClient client,
-            IDatabaseAccess databaseAccess)
+        private readonly IDatabaseAccess _databaseAccess;
+        private IHttpClientFactory _clientFactory;
+
+        public HandleTrivialRequest(IDatabaseAccess databaseAccess, IHttpClientFactory clientFactory)
         {
-            var result = await GetQuestions(client, databaseAccess, model);
+            _databaseAccess = databaseAccess;
+            _clientFactory = clientFactory;
+        }
+
+        public async Task<IEnumerable<ResponseModel>> Handle(RequestModel model)
+        {
+
+            var result = await GetQuestions(model);
 
             return result;
         }
 
-        private async Task<IEnumerable<ResponseModel>> GetQuestions(HttpClient client,
-            IDatabaseAccess databaseAccess, RequestModel model)
+        private async Task<IEnumerable<ResponseModel>> GetQuestions(RequestModel model)
         {
             try
             {
-                var questions = await GetQuestionsOnline(client, databaseAccess, model);
+                var questions = await GetQuestionsOnline(model);
                 if (questions == null)
-                    return databaseAccess.ReadQuestionsFromDatabase(model);
+                    return _databaseAccess.ReadQuestionsFromDatabase(model);
 
                 return questions;
             }
@@ -36,8 +45,9 @@ namespace Trivial.Handlers
             }
         }
 
-        private async Task<List<ResponseModel>> GetQuestionsOnline(HttpClient client, IDatabaseAccess databasesAccess, RequestModel model)
+        private async Task<List<ResponseModel>> GetQuestionsOnline(RequestModel model)
         {
+            var client = _clientFactory.CreateClient();
             var amount = String.IsNullOrWhiteSpace(model.Amount) ? "amount=10" : $"amount={model.Amount}";
             var type = String.IsNullOrWhiteSpace(model.Type) ? "" : $"&type={model.Type}";
             var difficulty = String.IsNullOrWhiteSpace(model.Difficulty) ? "" : $"&difficulty={model.Difficulty}";
@@ -50,7 +60,7 @@ namespace Trivial.Handlers
 
             var body = await res.Content.ReadAsStringAsync();
             var processedResponse = ProcessResponse(body);
-            databasesAccess.Persist(processedResponse);
+            _databaseAccess.Persist(processedResponse);
             return processedResponse;
         }
 
