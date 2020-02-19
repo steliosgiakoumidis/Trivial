@@ -1,14 +1,14 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
-    <div class="text-center">
-        <h1 class="display-4">Welcome to the Notification Portal</h1>
-        <div>
-            <a class="block" asp-action="QuestionsParameters" asp-controller="Home" asp-route-id="5">Play Trivial</a>
+    <body>
+        <div id="main" class="text-center">
+            <h1 class="display-4">Welcome to boredom portal</h1>
+            <div>
+                <a class="block" asp-action="QuestionsParameters" asp-controller="Home" asp-route-id="5">Play Trivial</a>
+            </div>
         </div>
-    </div>
-
+    </body>
 <script>
     function cl() {
         $('#oi').empty();
@@ -18,11 +18,12 @@
 <!-- CSS part -->
 
 <style>
+    
     .block {
         display: block;
         width: 100%;
         border: none;
-        background-color: #4CAF50;
+        background-color: seagreen;
         color: white;
         padding: 14px 28px;
         font-size: 16px;

@@ -4,6 +4,9 @@
 <div id="main2">
     <div id="main">
     </div>
+    <div id="results" style=" border:10px solid purple">
+
+    </div>
     <div></br></div>
     <a class="block" asp-action="QuestionsParameters" asp-controller="Home">Re-Start Questions</a>
 
@@ -13,7 +16,6 @@
 
 <style>
     .block {
-
         width: 100%;
         border: none;
         background-color: orange;
@@ -40,6 +42,7 @@
     var length = model.length;
     var answers = [];
     function next() {
+        $('#results').hide();
         var questionSet = model[offset];
         $('#main').empty();
         $('#main').append(`<div style="border: 3px solid black; padding: 5px;">${questionSet.question}</div>`);
@@ -75,9 +78,22 @@
             }
         }
         $('#main').empty();
-        $('#main').append('<h1 style="margin: auto; width: 50%">Congratulations!!!</h1>');
-        $('#main').append('<h5 style="margin: auto; width: 50%">This game is finished</h5>');
-        $('#main').append(`<div style="margin: auto; width: 50%; font-size: 30px; border: 3px solid purple;">Your score for this game was <br /> ${correctAnswers}/${totalAnswers}</div>`);
+        $('#results').empty();
+        $('#results').append('<h1 style="margin: auto; width: 50%">Congratulations!!!</h1>');
+        $('#results').append('<h5 style="margin: auto; width: 50%">This game is finished</h5>');
+        $('#results').append(`<div style="margin: auto; width: 50%; font-size: 30px;">Your score for this game was <br /> ${correctAnswers}/${totalAnswers}</div>`);
+        $('#results').append('</br>');
+        $('#results').append('<div style="font-size: 30px; font-weight: bold;">Correct Answers</div>');
+        for (var i = 0; i < length; i++) {
+            var correctAnswerInt = model[i].correctAnswer;
+            var answer = model[i].answers[correctAnswerInt];
+            $('#results').append(`<div style="font-weight: bold;">${model[i].question}</div>`);
+            $('#results').append(`<div>${answer}</div>`);
+
+
+        }
+        $('#results').show();
+
     }
 </script>
 
