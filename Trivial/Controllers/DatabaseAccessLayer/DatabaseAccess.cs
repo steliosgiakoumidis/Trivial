@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Trivial.DataModels;
 using Trivial.Entities;
 
@@ -10,31 +12,31 @@ namespace Trivial.DatabaseAccessLayer
 {
     public class DatabaseAccess : IDatabaseAccess
     {
-        private readonly Config _config;
-        private readonly string _connectionString;
         private TrivialContext _context;
-        public DatabaseAccess(IOptions<Config> config, TrivialContext context)
+        public DatabaseAccess(TrivialContext context)
         {
-            _config = config.Value;
-            _connectionString = _config.ConnectionString;
             _context = context;
-
-
         }
 
-        public void Persist(IEnumerable<ResponseModel> questions)
+        public async Task Persist(IEnumerable<ResponseModel> questions)
         {
-
-            List<int> listOfIds = GetHashIds();
-            foreach (var question in questions)
+            try
             {
-                var id = question.Question.GetHashCode();
-                if (!listOfIds.Contains(id))
+                List<int> listOfIds = await GetHashIds();
+                foreach (var question in questions)
                 {
-                    PersistQuestion(question, id);
+                    var id = question.Question.GetHashCode();
+                    if (!listOfIds.Contains(id))
+                    {
+                        PersistQuestion(question, id);
+                    }
+                    _context.SaveChanges();
                 }
             }
-
+            catch (Exception ex)
+            {
+                //Log.Error()
+            }
         }
 
         private void PersistQuestion(ResponseModel question, int id)
@@ -49,7 +51,6 @@ namespace Trivial.DatabaseAccessLayer
                 Question = question.Question,
                 Type = question.Type
             });
-            _context.SaveChanges();
         }
 
         public IEnumerable<ResponseModel> ReadQuestionsFromDatabase(RequestModel request)
@@ -72,9 +73,9 @@ namespace Trivial.DatabaseAccessLayer
                 trivial.IncorrectAnswers.Split(".!."), trivial.Type));
         }
 
-        public List<int> GetHashIds()
+        public async Task<List<int>> GetHashIds()
         {
-            return _context.Trivial.Select(a => a.Id).ToList(); ;
+            return await _context.Trivial.Select(a => a.Id).ToListAsync(); ;
         }
     }
 

@@ -11,16 +11,14 @@ using System.Linq;
 
 namespace Trivial.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/TrivialQuestions")]
     [ApiController]
     public class TrivialQuestionsController : ControllerBase
     {
         private readonly IHandleTrivialRequest _handleTrivialRequest;
 
 
-        public TrivialQuestionsController(IOptions<Config> conf,
-            IHandleTrivialRequest handleTrivialRequest,
-            IDatabaseAccess databaseAccess)
+        public TrivialQuestionsController(IHandleTrivialRequest handleTrivialRequest)
         {
             _handleTrivialRequest = handleTrivialRequest;
         }
@@ -29,11 +27,11 @@ namespace Trivial.Controllers
         public async Task<ActionResult<IEnumerable<ResponseModel>>> GetQuestions(string amount,
             string category, string difficulty)
         {
-            if (amount == "0" || String.IsNullOrEmpty(amount))
+            if (String.IsNullOrEmpty(amount) || amount == "0")
                 amount = "";
-            if (category == "0" || String.IsNullOrEmpty(category))
+            if (String.IsNullOrEmpty(category) || category == "0")
                 category = "";
-            if (difficulty == "0" || String.IsNullOrEmpty(difficulty))
+            if (String.IsNullOrEmpty(difficulty) || difficulty == "0")
                 difficulty = "";
             var requetsModel = new RequestModel(amount, category, difficulty);
 

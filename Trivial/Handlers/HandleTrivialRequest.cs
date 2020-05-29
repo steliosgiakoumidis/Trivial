@@ -22,57 +22,69 @@ namespace Trivial.Handlers
 
         public async Task<IEnumerable<ResponseModel>> Handle(RequestModel model)
         {
-
-            var result = await GetQuestions(model);
-
-            return result;
-        }
-
-        private async Task<IEnumerable<ResponseModel>> GetQuestions(RequestModel model)
-        {
             try
             {
-                var questions = await GetQuestionsOnline(model);
-                if (questions == null)
+                var questionsAndAnswers = await GetDataOnline(model);
+                if (questionsAndAnswers == null)
                     return _databaseAccess.ReadQuestionsFromDatabase(model);
 
-                return questions;
+                if (questionsAndAnswers.Count > 0)
+                    await _databaseAccess.Persist(questionsAndAnswers);
+
+                return questionsAndAnswers;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                //Log the exception
+                //Log.Error();
                 return new List<ResponseModel>();
             }
         }
 
-        private async Task<List<ResponseModel>> GetQuestionsOnline(RequestModel model)
+        private async Task<List<ResponseModel>> GetDataOnline(RequestModel model)
         {
-            var client = _clientFactory.CreateClient();
-            var amount = String.IsNullOrWhiteSpace(model.Amount) ? "amount=10" : $"amount={model.Amount}";
-            var type = "" ;
-            var difficulty = String.IsNullOrWhiteSpace(model.Difficulty) ? "" : $"&difficulty={model.Difficulty}";
-            var category = String.IsNullOrWhiteSpace(model.Category) ? "" : $"&category={model.Category}";
+            try
+            {
+                using var client = _clientFactory.CreateClient();
+                var amount = String.IsNullOrWhiteSpace(model.Amount) ? "amount=10" : $"amount={model.Amount}";
+                var type = String.Empty;
+                var difficulty = String.IsNullOrWhiteSpace(model.Difficulty) ? "" : $"&difficulty={model.Difficulty}";
+                var category = String.IsNullOrWhiteSpace(model.Category) ? "" : $"&category={model.Category}";
 
-            var url = $"https://opentdb.com/api.php?{amount}{type}{difficulty}{category}";
-            var res = await client.GetAsync(url);
-            if (!res.IsSuccessStatusCode)
+                var url = $"https://opentdb.com/api.php?{amount}{type}{difficulty}{category}";
+                var res = await client.GetAsync(url);
+                if (!res.IsSuccessStatusCode)
+                    return null ;
+
+                return await ProcessResponse(res);
+            }
+            catch
+            {
+                //Log.Error();
                 return null;
-
-            var body = await res.Content.ReadAsStringAsync();
-            var processedResponse = ProcessResponse(body);
-            _databaseAccess.Persist(processedResponse);
-            return processedResponse;
+            }
+            
         }
 
-        private List<ResponseModel> ProcessResponse(string body)
+        private async Task<List<ResponseModel>> ProcessResponse(HttpResponseMessage responseMessage)
         {
-            var extractedResponse = JsonConvert.DeserializeObject<RawModel>(body);
-            foreach (var question in extractedResponse.Results)
+            try
             {
-                question.Question = HttpUtility.HtmlDecode(question.Question).Replace(@"\", "");
+                var body = await responseMessage.Content.ReadAsStringAsync();
+                var extractedResponse = JsonConvert.DeserializeObject<RawModel>(body);
+                foreach (var question in extractedResponse.Results)
+                {
+                    question.Question = HttpUtility.HtmlDecode(question.Question).Replace(@"\", "");
 
+                }
+
+                return extractedResponse.Results;
             }
-            return extractedResponse.Results;
+            catch(Exception ex)
+            {
+                //Log.Error();
+                return null;
+            }
+
         }
     }
 }
