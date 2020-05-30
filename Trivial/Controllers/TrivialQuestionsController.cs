@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.Linq;
 using System.Threading.Tasks;
 using Trivial.DataModels;
 using Trivial.Handlers;
-using Trivial.Entities;
-using System.Linq;
 
 namespace Trivial.Controllers
 {

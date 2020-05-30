@@ -1,4 +1,4 @@
-﻿namespace Trivial.DataModels
+﻿namespace Web.Models
 {
     public class ResponseModel
     {

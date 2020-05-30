@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,8 +59,8 @@ namespace Trivial.DatabaseAccessLayer
                 .Where(q => q.Category == request.Category)
                 .Where(q => q.Difficulty == request.Difficulty)
                 .OrderBy(r => rand.Next()).Take(Convert.ToInt32(request.Amount)).ToList();
-            if (response.Count() < Convert.ToInt32(request.Amount)) 
-                return null;         
+            if (response.Count() < Convert.ToInt32(request.Amount))
+                return null;
 
             return EntityToResponseModel(response);
         }

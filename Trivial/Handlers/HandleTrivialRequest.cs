@@ -53,7 +53,7 @@ namespace Trivial.Handlers
                 var url = $"https://opentdb.com/api.php?{amount}{type}{difficulty}{category}";
                 var res = await client.GetAsync(url);
                 if (!res.IsSuccessStatusCode)
-                    return null ;
+                    return null;
 
                 return await ProcessResponse(res);
             }
@@ -62,7 +62,7 @@ namespace Trivial.Handlers
                 //Log.Error();
                 return null;
             }
-            
+
         }
 
         private async Task<List<ResponseModel>> ProcessResponse(HttpResponseMessage responseMessage)
@@ -79,7 +79,7 @@ namespace Trivial.Handlers
 
                 return extractedResponse.Results;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //Log.Error();
                 return null;

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Web.Handlers;
+using Web.Interfaces;
 
 namespace Web
 {
@@ -20,6 +22,7 @@ namespace Web
         {
             services.AddControllersWithViews();
             services.AddHttpClient();
+            services.AddScoped<IQuestionHandler, QuestionHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Trivial.DataModels;
+using Web.Models;
 
 namespace Web
 {
