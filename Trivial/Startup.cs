@@ -13,6 +13,8 @@ namespace Trivial
 {
     public class Startup
     {
+        private readonly Config _serilogSettings = new Config();
+
         public Startup(IConfiguration configuration)
         {
             var confBuilder = new ConfigurationBuilder()
@@ -28,8 +30,11 @@ namespace Trivial
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.Configure<Config>(opt => Configuration.GetSection("Config").Bind(opt));
-            services.AddDbContext<TrivialContext>(options => options.UseSqlServer("Server=stelios\\sqlexpress;Database=Trivial;Trusted_Connection=True;"));
+            var serilogSection = Configuration.GetSection("Config");
+            services.Configure<Config>(opt => serilogSection.Bind(opt));
+            serilogSection.Bind(_serilogSettings);
+
+            services.AddDbContext<TrivialContext>(options => options.UseSqlServer(_serilogSettings.ConnectionString));
             services.AddHttpClient();
             services.AddScoped<IHandleTrivialRequest, HandleTrivialRequest>();
             services.AddScoped<IDatabaseAccess, DatabaseAccess>();

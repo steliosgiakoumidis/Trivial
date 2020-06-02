@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +30,8 @@ namespace Trivial.DatabaseAccessLayer
                     {
                         PersistQuestion(question, id);
                     }
-                    _context.SaveChanges();
                 }
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -44,9 +45,9 @@ namespace Trivial.DatabaseAccessLayer
             {
                 Id = id,
                 Category = question.Category,
-                CorrectAnswer = question.Correct_Answer,
+                Correct_Answer = question.Correct_Answer,
                 Difficulty = question.Difficulty,
-                IncorrectAnswers = String.Join(".!.", question.Incorrect_Answers),
+                Incorrect_Answers = String.Join(".!.", question.Incorrect_Answers),
                 Question = question.Question,
                 Type = question.Type
             });
@@ -68,8 +69,8 @@ namespace Trivial.DatabaseAccessLayer
         private IEnumerable<ResponseModel> EntityToResponseModel(List<Entities.Trivial> response)
         {
             return response.Select(trivial => new ResponseModel(trivial.Category,
-                trivial.Difficulty, trivial.Question, trivial.CorrectAnswer,
-                trivial.IncorrectAnswers.Split(".!."), trivial.Type));
+                trivial.Difficulty, trivial.Question, trivial.Correct_Answer,
+                trivial.Incorrect_Answers.Split(".!."), trivial.Type));
         }
 
         public async Task<List<int>> GetHashIds()
