@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -23,17 +24,22 @@ namespace Web.Handlers
             try
             {
                 using var client = _clientFactory.CreateClient();
-                var url = $"https://localhost:44357/api/trivialquestions/amount/{questionParameters.Amount.ToString()}/category/0/difficulty/{questionParameters.Difficulty.ToString().ToLower()}";
+                var url = $"https://trivialportalbackend.azurewebsites.net/api/trivialquestions/amount/{questionParameters.Amount.ToString()}/category/0/difficulty/{questionParameters.Difficulty.ToString().ToLower()}";
                 var request = await client.GetAsync(url);
+                
                 if (!request.IsSuccessStatusCode)
+                {
+                    Log.Error($"StatusCode: {request.StatusCode}");
+
                     return new List<ResponseModel>();
+                }
 
                 var responseAsAsString = await request.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<List<ResponseModel>>(responseAsAsString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Log.Error
+                Log.Error($"Exception: {ex}");
                 return new List<ResponseModel>();
             }
         }

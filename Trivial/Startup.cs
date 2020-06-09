@@ -4,6 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using System;
+using System.IO;
+using System.Reflection;
 using Trivial.DatabaseAccessLayer;
 using Trivial.Entities;
 using Trivial.Handlers;
@@ -21,6 +26,10 @@ namespace Trivial
                 .AddJsonFile("appsettings.json")
                 .AddEnvironmentVariables();
 
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File(".\\logs.txt")
+                .CreateLogger();
+
             Configuration = confBuilder.Build();
         }
 
@@ -30,6 +39,14 @@ namespace Trivial
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddApplicationInsightsTelemetry();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "User Service", Version = "v1" });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
             var serilogSection = Configuration.GetSection("Config");
             services.Configure<Config>(opt => serilogSection.Bind(opt));
             serilogSection.Bind(_serilogSettings);
@@ -49,7 +66,11 @@ namespace Trivial
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Service");
+            });
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

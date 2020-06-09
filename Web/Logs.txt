@@ -1,0 +1,4 @@
+2020-06-06 22:43:00.692 +02:00 [ERR] StatusCode: InternalServerError
+2020-06-06 22:43:56.150 +02:00 [ERR] StatusCode: InternalServerError
+2020-06-06 22:45:05.650 +02:00 [ERR] StatusCode: InternalServerError
+2020-06-08 23:01:18.968 +02:00 [ERR] StatusCode: InternalServerError

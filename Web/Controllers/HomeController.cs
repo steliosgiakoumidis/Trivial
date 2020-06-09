@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Serilog;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Web.Interfaces;
@@ -17,7 +19,7 @@ namespace Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+                return View();
         }
 
         public IActionResult Privacy()
