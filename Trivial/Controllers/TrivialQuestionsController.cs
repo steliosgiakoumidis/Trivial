@@ -41,7 +41,7 @@ namespace Trivial.Controllers
 
                 return Ok(questionsResponse);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error($"Exception: {ex}");
 

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Trivial.Handlers;
 using Web.Interfaces;
 using Web.Models;
 
@@ -28,7 +27,7 @@ namespace Web.Handlers
                 using var client = _clientFactory.CreateClient();
                 var url = $"https://trivialportalbackend.azurewebsites.net/api/trivialquestions/amount/{questionParameters.Amount.ToString()}/category/0/difficulty/{questionParameters.Difficulty.ToString().ToLower()}";
                 var request = await client.GetAsync(url);
-                
+
                 if (!request.IsSuccessStatusCode)
                 {
                     Log.Error($"StatusCode: {request.StatusCode}");

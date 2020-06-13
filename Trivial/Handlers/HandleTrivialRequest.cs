@@ -59,7 +59,7 @@ namespace Trivial.Handlers
 
                 return await ProcessResponse(res);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error($"An error occured when fetching questions from third party. Exception: {ex}");
 

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,12 +16,12 @@ namespace Web
             Configuration = configuration;
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.ApplicationInsights("048a8608-01af-450a-9cf8-b3926c5d7753", TelemetryConverter.Traces, Serilog.Events.LogEventLevel.Warning)
+                .WriteTo.ApplicationInsights("....", TelemetryConverter.Traces, Serilog.Events.LogEventLevel.Warning)
                 .CreateLogger();
 
             Log.Information("Application started");
         }
-        
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
