@@ -39,8 +39,7 @@ namespace Web.Controllers
             if (questions.Count == 0)
                 return BadRequest();
 
-            var viewModel = new Transformations().ToViewModel(questions);
-            return View("~/Views/Questions.cshtml", viewModel);
+            return View("~/Views/Questions.cshtml", new Transformations().ToViewModel(questions));
         }
 
 

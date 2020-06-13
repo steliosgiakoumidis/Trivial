@@ -38,6 +38,7 @@ namespace Trivial.Controllers
                 var questionsResponse = await _handleTrivialRequest.Handle(requetsModel);
                 if (!questionsResponse.Any())
                     return BadRequest();
+
                 return Ok(questionsResponse);
             }
             catch(Exception ex)

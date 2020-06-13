@@ -27,7 +27,7 @@ namespace Trivial
                 .AddEnvironmentVariables();
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.File(".\\logs.txt")
+                .WriteTo.Console()
                 .CreateLogger();
 
             Configuration = confBuilder.Build();
@@ -42,7 +42,7 @@ namespace Trivial
             services.AddApplicationInsightsTelemetry();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "User Service", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Trivial", Version = "v1" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
@@ -59,8 +59,7 @@ namespace Trivial
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-            IConfiguration config)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

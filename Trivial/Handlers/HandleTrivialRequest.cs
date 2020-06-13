@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -35,7 +36,8 @@ namespace Trivial.Handlers
             }
             catch (Exception ex)
             {
-                //Log.Error();
+                Log.Error($"An error has occured while getting questions. Exception: {ex}");
+
                 return new List<ResponseModel>();
             }
         }
@@ -57,9 +59,10 @@ namespace Trivial.Handlers
 
                 return await ProcessResponse(res);
             }
-            catch
+            catch(Exception ex)
             {
-                //Log.Error();
+                Log.Error($"An error occured when fetching questions from third party. Exception: {ex}");
+
                 return null;
             }
 
@@ -74,14 +77,14 @@ namespace Trivial.Handlers
                 foreach (var question in extractedResponse.Results)
                 {
                     question.Question = HttpUtility.HtmlDecode(question.Question).Replace(@"\", "");
-
                 }
 
                 return extractedResponse.Results;
             }
             catch (Exception ex)
             {
-                //Log.Error();
+                Log.Error($"An error occured when processing fetched questions. Exception: {ex}");
+
                 return null;
             }
 
